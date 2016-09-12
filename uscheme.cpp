@@ -5,7 +5,7 @@
 #include <stack>
 #include <string>
 #include <unistd.h>
-#include <cctype> 
+#include <cctype>
 
 using namespace std;
 
@@ -24,9 +24,9 @@ bool DEBUG = false;
 
 struct Node {
     Node(string value, Node *left=nullptr, Node *right=nullptr) : value(value), left(left), right(right) {}
-    ~Node() { 
-        delete left; 
-        delete right; 
+    ~Node() {
+        delete left;
+        delete right;
     };
 
     string value;
@@ -36,15 +36,42 @@ struct Node {
     friend ostream &operator<<(ostream &os, const Node &n);
 };
 
+bool isOperator(string token) {
+    if (token == "+" || token == "-" || token == "*" || token == "/") {
+      return true;
+    }
+    return false;
+}
+
+void printPreOrder(const Node *root) {
+  if (root == nullptr) return;
+
+  cout << "(Node: value="<< root->value;
+  if (root->left) cout << ", left=";
+  printPreOrder(root->left);
+  if (root->right) cout <<", right=";
+  printPreOrder(root->right);
+  cout << ")";
+
+
+}
+
 ostream &operator<<(ostream &os, const Node &n) {
+    const Node *root = &n;
+    printPreOrder(root);
     return os;
 }
+
+
+
 
 // Parser ----------------------------------------------------------------------
 
 string parse_token(istream &s) {
     string token;
-    char next = s.get();
+    char next;
+    s >> next;
+
     if ((next == '(' || next == ')') || (next == '+' || next == '-' || next == '*' || next == '/')) {
         token = next;
     } else if (isdigit(next)) {
@@ -53,15 +80,14 @@ string parse_token(istream &s) {
             token += s.get();
         }
     }
-    cout << token;
     return token;
 }
 
 Node *parse_expression(istream &s) {
     string currToken = parse_token(s);
-    Node *left;
-    Node *right;
-    
+    Node *left = nullptr;
+    Node *right = nullptr;
+
     if (currToken == "" || currToken == ")") return nullptr;
 
     if (currToken == "(") {
@@ -76,10 +102,31 @@ Node *parse_expression(istream &s) {
 // Interpreter -----------------------------------------------------------------
 
 void evaluate_r(const Node *n, stack<int> &s) {
+
+
+
+}
+
+void postOrderBuild(const Node *root, stack <int> &s) {
+  if (root == nullptr) return;
+
+  postOrderBuild(root->left);
+  postOrderBuild(root->right);
+
+  if (isOperator(root->value)) {
+    evaluate_r(root, s);
+  }
+  else {
+    s.push(root->value);
+  }
+
+
 }
 
 int evaluate(const Node *n) {
-    return 0;
+    stack<int> s;
+    postOrderBuild(n, s);
+    return s.top();
 }
 
 // Main execution --------------------------------------------------------------

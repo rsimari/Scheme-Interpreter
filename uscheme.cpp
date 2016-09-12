@@ -9,6 +9,12 @@
 
 using namespace std;
 
+
+bool IsDigit( char c )
+{
+  return ( '0' <= c && c <= '9' );
+}
+
 // Globals ---------------------------------------------------------------------
 
 bool BATCH = false;
@@ -52,8 +58,19 @@ string parse_token(istream &s) {
 }
 
 Node *parse_expression(istream &s) {
-    parse_token(s);
-    return nullptr; //new Node(token, left, right);
+    string currToken = parse_token(s);
+    Node *left;
+    Node *right;
+    
+    if (currToken == "" || currToken == ")") return nullptr;
+
+    if (currToken == "(") {
+      currToken = parse_token(s);
+      left = parse_expression(s);
+      if (left != nullptr) right = parse_expression(s);
+      if (right != nullptr) parse_token(s);
+    }
+    return new Node(currToken, left, right);
 }
 
 // Interpreter -----------------------------------------------------------------
@@ -101,6 +118,7 @@ int main(int argc, char *argv[]) {
 
         // cout << evaluate(n) << endl;
         cout << endl;
+
         delete n;
     }
 

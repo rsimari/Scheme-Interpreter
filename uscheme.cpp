@@ -5,6 +5,7 @@
 #include <stack>
 #include <string>
 #include <unistd.h>
+#include <cctype> 
 
 using namespace std;
 
@@ -16,8 +17,11 @@ bool DEBUG = false;
 // Structures ------------------------------------------------------------------
 
 struct Node {
-    Node(string value, Node *left=nullptr, Node *right=nullptr);
-    ~Node();
+    Node(string value, Node *left=nullptr, Node *right=nullptr) : value(value), left(left), right(right) {}
+    ~Node() { 
+        delete left; 
+        delete right; 
+    };
 
     string value;
     Node * left;
@@ -34,11 +38,22 @@ ostream &operator<<(ostream &os, const Node &n) {
 
 string parse_token(istream &s) {
     string token;
+    char next = s.get();
+    if ((next == '(' || next == ')') || (next == '+' || next == '-' || next == '*' || next == '/')) {
+        token = next;
+    } else if (isdigit(next)) {
+        token = next;
+        while (isdigit(s.peek())) {
+            token += s.get();
+        }
+    }
+    cout << token;
     return token;
 }
 
 Node *parse_expression(istream &s) {
-    return new Node(token, left, right);
+    parse_token(s);
+    return nullptr; //new Node(token, left, right);
 }
 
 // Interpreter -----------------------------------------------------------------
@@ -84,8 +99,8 @@ int main(int argc, char *argv[]) {
         Node *n = parse_expression(s);
         if (DEBUG) { cout << "TREE: " << *n << endl; }
 
-        cout << evaluate(n) << endl;
-
+        // cout << evaluate(n) << endl;
+        cout << endl;
         delete n;
     }
 

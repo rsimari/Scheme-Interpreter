@@ -110,8 +110,8 @@ void evaluate_r(const Node *n, stack<int> &s) {
 void postOrderBuild(const Node *root, stack <int> &s) {
   if (root == nullptr) return;
 
-  postOrderBuild(root->left);
-  postOrderBuild(root->right);
+  postOrderBuild(root->left, s);
+  postOrderBuild(root->right, s);
 
   if (isOperator(root->value)) {
     evaluate_r(root, s);
@@ -119,7 +119,6 @@ void postOrderBuild(const Node *root, stack <int> &s) {
   else {
     s.push(root->value);
   }
-
 
 }
 

@@ -169,7 +169,6 @@ int main(int argc, char *argv[]) {
         if (DEBUG) { cout << "TREE: " << *n << endl; }
 
         cout << evaluate(n) << endl;
-        cout << endl;
 
         delete n;
     }

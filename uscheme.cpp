@@ -10,10 +10,6 @@
 using namespace std;
 
 
-bool IsDigit( char c )
-{
-  return ( '0' <= c && c <= '9' );
-}
 
 // Globals ---------------------------------------------------------------------
 
@@ -71,8 +67,7 @@ string parse_token(istream &s) {
     string token;
     char next;
     s >> next;
-
-    if ((next == '(' || next == ')') || (next == '+' || next == '-' || next == '*' || next == '/')) {
+    if ((next == '(' || next == ')') || isOperator(string(1, next))) {
         token = next;
     } else if (isdigit(next)) {
         token = next;
@@ -87,7 +82,6 @@ Node *parse_expression(istream &s) {
     string currToken = parse_token(s);
     Node *left = nullptr;
     Node *right = nullptr;
-
     if (currToken == "" || currToken == ")") return nullptr;
 
     if (currToken == "(") {
@@ -102,9 +96,18 @@ Node *parse_expression(istream &s) {
 // Interpreter -----------------------------------------------------------------
 
 void evaluate_r(const Node *n, stack<int> &s) {
-
-
-
+    // a and b are on the top of the stack and need to be operated on
+    int b = s.top(); s.pop();
+    int a = s.top(); s.pop();
+    if (n->value == "+") {
+        s.push(a + b);
+    } else if (n->value == "-") {
+        s.push(a - b);
+    } else if (n->value == "*") {
+        s.push(a * b);
+    } else if (n->value == "/") {
+        s.push(a / b);
+    }
 }
 
 void postOrderBuild(const Node *root, stack <int> &s) {
@@ -117,9 +120,8 @@ void postOrderBuild(const Node *root, stack <int> &s) {
     evaluate_r(root, s);
   }
   else {
-    s.push(root->value);
+    s.push(stoi(root->value));
   }
-
 }
 
 int evaluate(const Node *n) {
@@ -162,7 +164,7 @@ int main(int argc, char *argv[]) {
         Node *n = parse_expression(s);
         if (DEBUG) { cout << "TREE: " << *n << endl; }
 
-        // cout << evaluate(n) << endl;
+        cout << evaluate(n) << endl;
         cout << endl;
 
         delete n;

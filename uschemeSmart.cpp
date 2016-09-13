@@ -5,8 +5,8 @@
 #include <stack>
 #include <string>
 #include <unistd.h>
-#include <cctype>
 #include <memory>
+#include <cctype>
 
 using namespace std;
 
@@ -21,10 +21,9 @@ bool DEBUG = false;
 // Structures ------------------------------------------------------------------
 
 struct Node {
-    Node(string value, shared_ptr<Node> left, shared_ptr<Node> right) : value(value), left(left), right(right) {}
-    ~Node() {
 
-    };
+    Node(string value, shared_ptr<Node> left=nullptr, shared_ptr<Node> right=nullptr) : value(value), left(left), right(right) {}
+    ~Node() {};
 
     string value;
     shared_ptr<Node> left;
@@ -40,7 +39,8 @@ bool isOperator(string token) {
     return false;
 }
 
-void printPreOrder(const Node* root) {
+
+void printPreOrder(const shared_ptr<Node> root) {
   if (root == nullptr) return;
 
   cout << "(Node: value="<< root->value;
@@ -54,7 +54,8 @@ void printPreOrder(const Node* root) {
 }
 
 ostream &operator<<(ostream &os, const Node &n) {
-    const Node *root = &n;
+
+    auto root = make_shared<Node>(n);
     printPreOrder(root);
     return os;
 }
@@ -81,8 +82,10 @@ string parse_token(istream &s) {
 
 shared_ptr<Node> parse_expression(istream &s) {
     string currToken = parse_token(s);
-    shared_ptr<Node> left;
-    shared_ptr<Node> right;
+
+    shared_ptr<Node> left = nullptr;
+    shared_ptr<Node> right = nullptr;
+
     if (currToken == "" || currToken == ")") return nullptr;
 
     if (currToken == "(") {
@@ -91,7 +94,8 @@ shared_ptr<Node> parse_expression(istream &s) {
       if (left != nullptr) right = parse_expression(s);
       if (right != nullptr) parse_token(s);
     }
-    return shared_ptr<Node>(new Node(currToken, left, right));
+
+    return shared_ptr<Node> (new Node(currToken, left, right));
 }
 
 // Interpreter -----------------------------------------------------------------
@@ -108,7 +112,9 @@ void evaluate_r(const shared_ptr<Node> n, stack<int> &s) {
         s.push(a * b);
     } else if (n->value == "/") {
         s.push(a / b);
+
     }
+
 }
 
 void postOrderBuild(const shared_ptr<Node> root, stack <int> &s) {
@@ -166,9 +172,7 @@ int main(int argc, char *argv[]) {
         if (DEBUG) { cout << "TREE: " << *n << endl; }
 
         cout << evaluate(n) << endl;
-        cout << endl;
 
-      //  delete n;
     }
 
     return 0;

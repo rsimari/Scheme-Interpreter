@@ -52,8 +52,6 @@ void printPreOrder(const Node *root) {
   if (root->right) cout <<", right=";
   printPreOrder(root->right);
   cout << ")";
-
-
 }
 
 ostream &operator<<(ostream &os, const Node &n) {
@@ -61,9 +59,6 @@ ostream &operator<<(ostream &os, const Node &n) {
     printPreOrder(root);
     return os;
 }
-
-
-
 
 // Parser ----------------------------------------------------------------------
 

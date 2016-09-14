@@ -28,6 +28,6 @@ Examples
 
 Contributions:
 
-Robert Simari --> wrote evaluate_r() and parse__token() for the most part by myself. We really partner coded most of the project. Together we did the changes to support smart pointers.
+Robert Simari --> wrote evaluate_r() and parse__token() for the most part by myself. We really partner coded most of the project. We did the changes to support smart pointers together.
 
 John Joyce --> 

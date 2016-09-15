@@ -10,10 +10,6 @@
 using namespace std;
 
 
-bool IsDigit( char c )
-{
-  return ( '0' <= c && c <= '9' );
-}
 
 // Globals ---------------------------------------------------------------------
 
@@ -106,7 +102,7 @@ void evaluate_r(const Node *n, stack<int> &s) {
         s.push(a * b);
     } else if (n->value == "/") {
         s.push(a / b);
-    } 
+    }
 }
 
 void postOrderBuild(const Node *root, stack <int> &s) {

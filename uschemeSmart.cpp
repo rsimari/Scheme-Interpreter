@@ -10,6 +10,9 @@
 
 using namespace std;
 
+
+
+
 // Globals ---------------------------------------------------------------------
 
 bool BATCH = false;
@@ -18,6 +21,7 @@ bool DEBUG = false;
 // Structures ------------------------------------------------------------------
 
 struct Node {
+
     Node(string value, shared_ptr<Node> left=nullptr, shared_ptr<Node> right=nullptr) : value(value), left(left), right(right) {}
     ~Node() {};
 
@@ -35,6 +39,7 @@ bool isOperator(string token) {
     return false;
 }
 
+
 void printPreOrder(const shared_ptr<Node> root) {
   if (root == nullptr) return;
 
@@ -49,6 +54,7 @@ void printPreOrder(const shared_ptr<Node> root) {
 }
 
 ostream &operator<<(ostream &os, const Node &n) {
+
     auto root = make_shared<Node>(n);
     printPreOrder(root);
     return os;
@@ -76,8 +82,10 @@ string parse_token(istream &s) {
 
 shared_ptr<Node> parse_expression(istream &s) {
     string currToken = parse_token(s);
+
     shared_ptr<Node> left = nullptr;
     shared_ptr<Node> right = nullptr;
+
     if (currToken == "" || currToken == ")") return nullptr;
 
     if (currToken == "(") {
@@ -86,6 +94,7 @@ shared_ptr<Node> parse_expression(istream &s) {
       if (left != nullptr) right = parse_expression(s);
       if (right != nullptr) parse_token(s);
     }
+
     return shared_ptr<Node> (new Node(currToken, left, right));
 }
 
@@ -103,7 +112,9 @@ void evaluate_r(const shared_ptr<Node> n, stack<int> &s) {
         s.push(a * b);
     } else if (n->value == "/") {
         s.push(a / b);
-    } 
+
+    }
+
 }
 
 void postOrderBuild(const shared_ptr<Node> root, stack <int> &s) {
@@ -161,6 +172,7 @@ int main(int argc, char *argv[]) {
         if (DEBUG) { cout << "TREE: " << *n << endl; }
 
         cout << evaluate(n) << endl;
+
     }
 
     return 0;
